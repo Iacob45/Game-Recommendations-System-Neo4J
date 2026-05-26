@@ -47,3 +47,47 @@ class UserService:
 
         result = neo4j_client.execute_read(query, {"user_id": user_id})
         return result[0]["user"] if result else None
+
+    @staticmethod
+    def play_game(user_id: str, game_id: str):
+        query = """
+        MATCH (u:User {id: $user_id})
+        MATCH (g:Game {id: $game_id})
+        MERGE (u)-[:PLAYED]->(g)
+        RETURN u.id AS user_id, g.id AS game_id
+        """
+
+        result = neo4j_client.execute_write(query, {"user_id": user_id, "game_id": game_id})
+        return result[0] if result else None
+
+    @staticmethod
+    def like_game(user_id: str, game_id: str):
+        query = """
+        MATCH (u:User {id: $user_id})
+        MATCH (g:Game {id: $game_id})
+        MERGE (u)-[:LIKED]->(g)
+        RETURN u.id AS user_id, g.id AS game_id
+        """
+
+        result = neo4j_client.execute_write(query, {"user_id": user_id, "game_id": game_id})
+        return result[0] if result else None
+
+    @staticmethod
+    def rate_game(user_id: str, game_id: str, score: int):
+        query = """
+        MATCH (u:User {id: $user_id})
+        MATCH (g:Game {id: $game_id})
+        MERGE (u)-[r:RATED]->(g)
+        SET r.score = $score
+        RETURN u.id AS user_id, g.id AS game_id, r.score AS score
+        """
+
+        result = neo4j_client.execute_write(
+            query,
+            {
+                "user_id": user_id,
+                "game_id": game_id,
+                "score": score
+            }
+        )
+        return result[0] if result else None
