@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.config import runtime_config
 from app.db.neo4j_client import neo4j_client
+from app.routers.users import router as users_router
 
 
 @asynccontextmanager
@@ -15,10 +16,13 @@ async def lifespan(app_instance: FastAPI):
 
 app = FastAPI(
     title="Neo4j Game Recommender",
-    description="Sistem de recomandare pentru jocuri video folosind Neo4j si FastAPI",
+    description="Game recommendations system using Neo4j and FastApi",
     version="1.0.0",
     lifespan=lifespan
 )
+
+
+app.include_router(users_router)
 
 
 @app.get("/")
