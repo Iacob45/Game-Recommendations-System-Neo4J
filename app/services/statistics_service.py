@@ -18,18 +18,31 @@ class StatisticsService:
         WITH total_users, total_games, total_genres, count(platform) AS total_platforms
 
         MATCH ()-[r]->()
-        WITH total_users, total_games, total_genres, total_platforms, type(r) AS relationship_type, count(r) AS total
+        WITH
+            total_users,
+            total_games,
+            total_genres,
+            total_platforms,
+            type(r) AS relationship_type,
+            count(r) AS total
         ORDER BY total DESC
+
+        WITH
+            total_users,
+            total_games,
+            total_genres,
+            total_platforms,
+            collect({
+                type: relationship_type,
+                total: total
+            }) AS relationships
 
         RETURN {
             total_users: total_users,
             total_games: total_games,
             total_genres: total_genres,
             total_platforms: total_platforms,
-            relationships: collect({
-                type: relationship_type,
-                total: total
-            })
+            relationships: relationships
         } AS statistics
         """
 
