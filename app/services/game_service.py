@@ -20,13 +20,11 @@ class GameService:
             MERGE (g)-[:AVAILABLE_ON]->(platform)
         )
 
-        WITH g
         FOREACH (_ IN CASE WHEN $developer IS NULL THEN [] ELSE [1] END |
             MERGE (developer:Developer {name: $developer})
             MERGE (g)-[:DEVELOPED_BY]->(developer)
         )
 
-        WITH g
         FOREACH (_ IN CASE WHEN $publisher IS NULL THEN [] ELSE [1] END |
             MERGE (publisher:Publisher {name: $publisher})
             MERGE (g)-[:PUBLISHED_BY]->(publisher)

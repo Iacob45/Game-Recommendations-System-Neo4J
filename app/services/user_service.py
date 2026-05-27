@@ -82,12 +82,5 @@ class UserService:
         RETURN u.id AS user_id, g.id AS game_id, r.score AS score
         """
 
-        result = neo4j_client.execute_write(
-            query,
-            {
-                "user_id": user_id,
-                "game_id": game_id,
-                "score": score
-            }
-        )
+        result = neo4j_client.execute_write(query, {"user_id": user_id, "game_id": game_id, "score": score})
         return result[0] if result else None
